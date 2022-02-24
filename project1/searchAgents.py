@@ -506,19 +506,32 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    ans=0
+    answer = 0
     foodList = foodGrid.asList()
-    while len(foodList)>0:
-        temp=float('inf')
-        tempPos=position
-        for food in foodList:
-            if util.manhattanDistance(position,food) < temp:
-                temp=util.manhattanDistance(position,food)
-                tempPos=food
-        position=tempPos
-        foodList.remove(position)
-        ans+=temp
-    return ans
+    characterPositionX, characterPositionY = position
+    distancesToFood = []
+
+    for x, y in foodList:
+        xDistance = abs(x - characterPositionX)
+        yDistance = abs(y - characterPositionY)
+        currentDistance = xDistance + yDistance
+        distancesToFood.append(currentDistance)
+    
+    if len(distancesToFood) != 0 :
+        answer = min(distancesToFood)
+
+    return answer
+    #while len(foodList)>0:
+    #    temp=float('inf')
+    #    tempPos=position
+    #    for food in foodList:
+    #        if util.manhattanDistance(position,food) < temp:
+    #            temp=util.manhattanDistance(position,food)
+    #            tempPos=food
+    #    position=tempPos
+    #    foodList.remove(position)
+    #    ans+=temp
+    #return answer
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -546,7 +559,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -582,7 +595,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        stateGoal = (state in self.food)
+        return stateGoal
 
 ##################
 # Mini-contest 1 #
