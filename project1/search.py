@@ -5,11 +5,11 @@
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
+
 """
 In search.py, you will implement generic search algorithms which are called
 by Pacman agents (in searchAgents.py).
 """
-
 
 import util
 
@@ -84,7 +84,26 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    stack = util.Stack()
+    stack.push((problem.getStartState(),[]))
+    currPath=[]
+    visited=[]
+    while not stack.isEmpty():
+        data = stack.pop()
+        currState = data[0]
+        currPath = data[1]
+        if problem.isGoalState(currState):
+            return currPath
+        else:
+            visited.append(currState)
+            for successor in problem.getSuccessors(currState):
+                if not successor[0] in visited:
+                    newPath=[]
+                    for path in currPath:
+                        newPath.append(path)
+                    newPath.append(successor[1])
+                    stack.push((successor[0],newPath))
+    return currPath
 
 def breadthFirstSearch(problem):
     """
@@ -92,12 +111,52 @@ def breadthFirstSearch(problem):
     [2nd Edition: p 73, 3rd Edition: p 82]
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    queue = util.Queue()
+    queue.push((problem.getStartState(),[]))
+    currPath=[]
+    ans=[]
+    visited=[problem.getStartState()]
+    while not queue.isEmpty():
+        data = queue.pop()
+        currState = data[0]
+        currPath = data[1]
+        if problem.isGoalState(currState):
+            return currPath
+        else:
+            for successor in problem.getSuccessors(currState):
+                if not successor[0] in visited:
+                    visited.append(successor[0])
+                    newPath=[]
+                    for path in currPath:
+                        newPath.append(path)
+                    newPath.append(successor[1])
+                    queue.push((successor[0],newPath))
+    return currPath
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pq = util.PriorityQueue()
+    pq.push((problem.getStartState(),[]),0)
+    currPath=[]
+    visited=[]
+    while not pq.isEmpty():
+        data = pq.pop()
+        currState = data[0]
+        currPath = data[1]
+        if problem.isGoalState(currState):
+            return currPath
+        else:
+            if not currState in visited:
+                visited.append(currState)
+                for successor in problem.getSuccessors(currState):
+                    newPath=[]
+                    for path in currPath:
+                        newPath.append(path)
+                    newPath.append(successor[1])
+                    pq.push((successor[0],newPath),problem.getCostOfActions(newPath))
+    return currPath
 
 def nullHeuristic(state, problem=None):
     """
@@ -109,7 +168,26 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pq = util.PriorityQueue()
+    pq.push((problem.getStartState(),[]),0)
+    currPath=[]
+    visited=[]
+    while not pq.isEmpty():
+        data = pq.pop()
+        currState = data[0]
+        currPath = data[1]
+        if problem.isGoalState(currState):
+            return currPath
+        else:
+            if not currState in visited:
+                visited.append(currState)
+                for successor in problem.getSuccessors(currState):
+                    newPath=[]
+                    for path in currPath:
+                        newPath.append(path)
+                    newPath.append(successor[1])
+                    pq.push((successor[0],newPath),problem.getCostOfActions(newPath)+heuristic(successor[0],problem))
+    return currPath
 
 
 # Abbreviations
